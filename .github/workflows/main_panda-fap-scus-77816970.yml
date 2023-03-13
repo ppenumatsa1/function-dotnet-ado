@@ -40,3 +40,12 @@ jobs:
           slot-name: 'Production'
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_1427608613FD4FD48C67D921E1DAD768 }}
+
+      - name: 'Run Azure Functions Action'
+        uses: Azure/functions-action@v1
+        id: fa
+        with:
+          app-name: 'panda-fap-ncus-97396978'
+          slot-name: 'production'
+          package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
+          publish-profile: ${{ secrets.AzureAppService_PublishProfile_a8191dafcfba4c6d9feb5dbbdab3c18b }}
