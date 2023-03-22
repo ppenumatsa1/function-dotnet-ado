@@ -34,18 +34,18 @@ jobs:
 
       - name: 'Run Azure Functions Action'
         uses: Azure/functions-action@v1
-        id: fa
+        id: fa-scus
         with:
-          app-name: 'panda-fap-scus-77816970'
+          app-name: 'panda-fap-scus-451692768'
           slot-name: 'Production'
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_1427608613FD4FD48C67D921E1DAD768 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_PANDA_FAP_SCUS_451692768 }}
 
       - name: 'Run Azure Functions Action'
         uses: Azure/functions-action@v1
-        id: fa1
+        id: fa-ncus
         with:
-          app-name: 'panda-fap-ncus-97396978'
+          app-name: 'panda-fap-ncus-442703763'
           slot-name: 'production'
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
-          publish-profile: ${{ secrets.AzureAppService_PublishProfile_a8191dafcfba4c6d9feb5dbbdab3c18b }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_PANDA_FAP_NCUS_442703763 }}
