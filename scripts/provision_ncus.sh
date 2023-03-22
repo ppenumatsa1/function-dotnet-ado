@@ -2,7 +2,7 @@
 # Variable block
 let "randomIdentifier=$RANDOM*$RANDOM"
 location="northcentralus"
-resourceGroup="rg-panda-ncus"
+resourceGroup="rg-panda-ncus1"
 tag="create-function-app-premium-plan"
 storage="pandapocsa$randomIdentifier"
 premiumPlan="panda-prem-plan-ncus-$randomIdentifier"
@@ -13,20 +13,20 @@ skuPlan="EP1"
 functionsVersion="4"
 
 # Create a resource group
-echo "Creating $resourceGroup in "$location"..."
+echo "Creating resource group $resourceGroup in "$location"..."
 az group create --name $resourceGroup --location "$location" --tags $tag
 
 # Create an Azure storage account in the resource group.
-echo "Creating $storage"
+echo "Creating storage account $storage"
 az storage account create --name $storage --location "$location" --resource-group $resourceGroup --sku $skuStorage
 
 # Create a Premium plan
-echo "Creating $premiumPlan"
+echo "Creating Premium plan $premiumPlan"
 az functionapp plan create --name $premiumPlan --resource-group $resourceGroup --location "$location" --is-linux=true --sku $skuPlan
 
 # Create a Function App
-echo "Creating $functionApp"
-az functionapp create --name $functionApp --storage-account $storage --plan $premiumPlan --resource-group $resourceGroup --runtime dotnet --runtime-version 6.0 --disable-app-insights --functions-version $functionsVersion 
+echo "Creating Function App $functionApp"
+az functionapp create --name $functionApp --storage-account $storage --plan $premiumPlan --resource-group $resourceGroup --runtime dotnet --runtime-version 6.0  --functions-version $functionsVersion 
 
 # sleep for 30 Seconds
 echo "Sleeping for 30 Seconds"
@@ -40,5 +40,5 @@ func azure functionapp publish $functionApp
 # az group delete --name $resourceGroup
 
 # delete blobs in a container -- add auth or account-key 
-az storage blob delete-batch -s testcontainer --pattern *.txt --account-name sapandapocdl
+# az storage blob delete-batch -s testcontainer --pattern *.txt --account-name sapandapocdl
 
