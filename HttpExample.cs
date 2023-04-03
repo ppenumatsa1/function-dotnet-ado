@@ -18,7 +18,7 @@ namespace PandaPoc
         
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
-            [Blob("testcontainer/{rand-guid}.txt", FileAccess.Write, Connection = "sapandapoc_conn")] Stream outputBlob,
+            [Blob("testcontainer/{rand-guid}.txt", FileAccess.Write, Connection = "sapandapocconn")] Stream outputBlob,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
