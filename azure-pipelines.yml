@@ -11,7 +11,8 @@ variables:
   azureSubscription: '4b3a0ed5-9ff6-4145-9cae-171314bb5130'
 
   # Function app name
-  functionAppName: 'panda-fap-scus-322868638'
+  functionAppNameSCUS: 'panda-fap-scus-322868638'
+  functionAppNameNCUS: 'panda-fap-ncus-328555464'
 
   # Working Directory
   workingDirectory: '$(System.DefaultWorkingDirectory)/'
@@ -30,6 +31,13 @@ stages:
       vmImage: $(vmImageName)
 
     steps:
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'restore'
+        projects: '$(workingDirectory)/*.csproj'
+        feedsToUse: 'select'
+
+
     - task: DotNetCoreCLI@2
       displayName: Build
       inputs:
@@ -58,7 +66,7 @@ stages:
   jobs:
   - deployment: Deploy
     displayName: Deploy
-    environment: 'development'
+    environment: 'Production'
     pool:
       vmImage: $(vmImageName)
 
@@ -68,9 +76,21 @@ stages:
 
           steps:
           - task: AzureFunctionApp@1
-            displayName: 'Azure functions app deploy'
+            displayName: 'Azure functions app deploy to SCUS'
             inputs:
               azureSubscription: '$(azureSubscription)'
-              appType: functionApp
-              appName: $(functionAppName)
+              appType: functionAppLinux
+              appName: $(functionAppNameSCUS)
               package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
+              runtimeStack: 'DOTNET|6.0'
+              deploymentMethod: 'auto'
+
+          - task: AzureFunctionApp@2
+            displayName: 'Azure functions app deploy to NCUS'
+            inputs:
+              azureSubscription: '$(azureSubscription)'
+              appType: 'functionAppLinux'
+              appName: $(functionAppNameNCUS)
+              package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
+              runtimeStack: 'DOTNET|6.0'
+              deploymentMethod: 'auto'
