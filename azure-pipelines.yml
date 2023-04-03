@@ -6,6 +6,9 @@
 trigger:
 - main
 
+resources:
+- repo: self
+
 pool:
   vmImage: ubuntu-latest
 
