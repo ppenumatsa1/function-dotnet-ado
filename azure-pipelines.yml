@@ -1,0 +1,118 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- main
+
+variables:
+  # Azure Resource Manager connection created during pipeline creation
+  sc-func-scus: 'sc-arm-func-scus'
+  sc-func-ncus: 'sc-arm-func-ncus'
+
+
+  # Function app name
+  functionAppNameSCUS: 'panda-fap-scus-322868638'
+  functionAppNameNCUS: 'panda-fap-ncus-328555464'
+
+  # Working Directory
+  workingDirectory: '$(System.DefaultWorkingDirectory)/'
+
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+
+stages:
+- stage: Build
+  displayName: Build stage
+
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+
+    steps:
+    - task: DotNetCoreCLI@2
+      displayName: Restore
+      inputs:
+        command: 'restore'
+        projects: '$(workingDirectory)/*.csproj'
+        feedsToUse: 'select'
+
+
+    - task: DotNetCoreCLI@2
+      displayName: Build
+      inputs:
+        command: 'build'
+        projects: |
+          $(workingDirectory)/*.csproj
+        arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration Release
+
+    - task: ArchiveFiles@2
+      displayName: 'Archive files'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/publish_output'
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+        replaceExistingArchive: true
+
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+      artifact: drop
+
+- stage: DeploySCUS
+  displayName: Deploy stage scus
+  dependsOn: Build
+  condition: succeeded()
+
+  jobs:
+  - deployment: Deploy
+    displayName: Deploy to scus
+    environment: 'func-prod-scus'
+    pool:
+      vmImage: $(vmImageName)
+
+    strategy:
+      runOnce:
+        deploy:
+
+          steps:
+          - task: AzureFunctionApp@1
+            displayName: 'Azure functions app deploy to SCUS'
+            inputs:
+              azureSubscription: '$(sc-func-scus)'
+              appType: functionAppLinux
+              appName: $(functionAppNameSCUS)
+              package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
+              runtimeStack: 'DOTNET|6.0'
+              deploymentMethod: 'auto'
+
+
+- stage: DeployNCUS
+  displayName: Deploy stage ncus
+  dependsOn: Build
+  condition: succeeded()
+
+  jobs:
+  - deployment: Deploy
+    displayName: Deploy to ncus
+    environment: 'func-prod-ncus'
+    pool:
+      vmImage: $(vmImageName)
+
+    strategy:
+      runOnce:
+        deploy:
+
+          steps:
+
+          - task: AzureFunctionApp@2
+            displayName: 'Azure functions app deploy to NCUS'
+            inputs:
+              azureSubscription: '$(sc-func-ncus)'
+              appType: 'functionAppLinux'
+              appName: $(functionAppNameNCUS)
+              package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
+              runtimeStack: 'DOTNET|6.0'
+              deploymentMethod: 'auto'
