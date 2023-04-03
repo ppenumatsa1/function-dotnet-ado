@@ -32,6 +32,7 @@ stages:
 
     steps:
     - task: DotNetCoreCLI@2
+      displayName: Restore
       inputs:
         command: 'restore'
         projects: '$(workingDirectory)/*.csproj'
