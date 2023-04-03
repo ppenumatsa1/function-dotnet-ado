@@ -8,7 +8,7 @@ trigger:
 
 variables:
   # Azure Resource Manager connection created during pipeline creation
-  azureSubscription: '4b3a0ed5-9ff6-4145-9cae-171314bb5130'
+  azureSubscription: 'b6113872-8e9a-4443-bd4d-4295049e3294'
 
   # Function app name
   functionAppNameSCUS: 'panda-fap-scus-322868638'
