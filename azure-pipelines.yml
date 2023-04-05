@@ -13,8 +13,8 @@ variables:
 
 
   # Function app name
-  functionAppNameSCUS: 'panda-fap-scus-322868638'
-  functionAppNameNCUS: 'panda-fap-ncus-328555464'
+  functionAppNameSCUS: 'panda-fap-scus-34306987'
+  functionAppNameNCUS: 'panda-fap-ncus-56008945'
 
   # Working Directory
   workingDirectory: '$(System.DefaultWorkingDirectory)/'
