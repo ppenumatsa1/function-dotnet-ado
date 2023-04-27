@@ -91,7 +91,7 @@ stages:
 
 - stage: DeployNCUS
   displayName: Deploy stage ncus
-  dependsOn: Build
+  dependsOn: DeploySCUS
   condition: succeeded()
 
   jobs:
