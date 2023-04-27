@@ -13,8 +13,8 @@ variables:
 
 
   # Function app name
-  functionAppNameSCUS: 'panda-fap-scus-34306987'
-  functionAppNameNCUS: 'panda-fap-ncus-56008945'
+  functionAppNameSCUS: 'panda-fap-scus-259909683'
+  functionAppNameNCUS: 'panda-fap-ncus-80954090'
 
   # Working Directory
   workingDirectory: '$(System.DefaultWorkingDirectory)/'
@@ -91,7 +91,7 @@ stages:
 
 - stage: DeployNCUS
   displayName: Deploy stage ncus
-  dependsOn: Build
+  dependsOn: DeploySCUS
   condition: succeeded()
 
   jobs:
